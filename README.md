@@ -2,7 +2,69 @@
 
 Node express project
 
-## Getting started
+## Installed dependencies
+
+### Production
+
+-dotenv: accesses to environment variables from .env files
+
+Note: Please create a .env file with a new PORT environtment variable. Otherwise, app willl run in port 8000 by default.
+
+
+-express: web framework with node
+
+### Dev
+
+-concurrently: run commands concurrently. It makes easier to run multiple commands. 
+
+Note: commands should be surrounded with quotes
+
+-eslint: allows to stablish rules for a cleaning code
+
+Note: use npx tsc --init to configure eslint. It will call additional dependencides: eslint-config-standard (or the selected template in the config process), eslint-plugin-import, eslint-plugin-node and eslint-plugin-promise
+
+-jest: JS unit testing
+
+-nodemon: Watch for js, mjs and json files changes, relaunching every time
+
+-serve: serve the coverage in the web
+
+-supertest: testing HTTP servers
+
+-ts-node: required to run the unit tests. TS execution environment and REPL for node.js(https://www.npmjs.com/search?q=ts-node).
+
+-typescript. 
+
+Note: use npx tsc --init to create a tsconfig file.
+
+-@types/express, @types/jest and @types/node: typescript versions of these tools
+
+-webpack: packs modules making the solution lighter
+
+-webpack-cli: init webpack
+
+-webpack-shell-plugin: allows webpack config
+
+## Scripts
+
+-build: run tsc transpiling from TS to JS
+
+-start: run index.js (result from transpiling)
+
+-dev: run concurrently tsc--watch(listen permanently to any changes and transpile in the process) and index.js
+
+-test: run Jest.
+
+-serve:coverage: run test, redirect to coverage location and serve.
+
+
+
+
+
+
+
+
+-
 
 To make it easy for you to get started with GitLab, here's a list of recommended next steps.
 
