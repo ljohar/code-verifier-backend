@@ -1,6 +1,6 @@
-import { BasicResponse } from "../types"
+import { BasicResponse } from "../types";
 
 
-export interface IHelloController{
+export interface IHelloController {
     getMessage(name?:string): Promise<BasicResponse>
 }

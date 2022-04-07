@@ -13,6 +13,10 @@ Note: Please create a .env file with a new PORT environtment variable. Otherwise
 
 -express: web framework with node
 
+-cors(Cross-Origin Resource Sharing): allow (from  different domains) or restrict requested resources on a web server
+
+-helmet: help secure Express
+
 ### Dev
 
 -concurrently: run commands concurrently. It makes easier to run multiple commands. 
@@ -37,7 +41,7 @@ Note: use npx tsc --init to configure eslint. It will call additional dependenci
 
 Note: use npx tsc --init to create a tsconfig file.
 
--@types/express, @types/jest and @types/node: typescript versions of these tools
+-@types/express, @types/jest and @types/node: TS types of these tools
 
 -webpack: packs modules making the solution lighter
 
