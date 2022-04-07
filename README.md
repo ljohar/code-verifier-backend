@@ -47,7 +47,7 @@ Note: use npx tsc --init to create a tsconfig file.
 
 ## Scripts
 
--build: run tsc transpiling from TS to JS
+-build: run tsc transpiling from TS to JS. Creates folder dist
 
 -start: run index.js (result from transpiling)
 
