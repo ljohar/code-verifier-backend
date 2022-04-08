@@ -22,6 +22,11 @@ server.use(
     rootRouter
 )
 
+
+//Static server (tsoa docs)
+
+server.use(express.static('public'));
+
 // TODO Moongoose Connection
 
 

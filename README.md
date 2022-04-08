@@ -2,6 +2,20 @@
 
 Node express project
 
+## Scripts
+
+-build: run webpack in mode development, the transpiled and packed code is saved in dist folder.
+
+-build:prod: run webpack in mode production
+
+-start: run index.js (result from transpiling)
+
+-dev: run concurrently tsc--watch(listen permanently to any changes and transpile in the process) and index.js
+
+-test: run Jest.
+
+-serve:coverage: run test, redirect to coverage location and serve.
+
 ## Installed dependencies
 
 ### Production
@@ -16,6 +30,8 @@ Note: Please create a .env file with a new PORT environtment variable. Otherwise
 -cors(Cross-Origin Resource Sharing): allow (from  different domains) or restrict requested resources on a web server
 
 -helmet: help secure Express
+
+-tsoa: create documentation with annotations (JSON swagger), works with TS.
 
 ### Dev
 
@@ -49,17 +65,7 @@ Note: use npx tsc --init to create a tsconfig file.
 
 -webpack-shell-plugin: allows webpack config
 
-## Scripts
 
--build: run tsc transpiling from TS to JS. Creates folder dist
-
--start: run index.js (result from transpiling)
-
--dev: run concurrently tsc--watch(listen permanently to any changes and transpile in the process) and index.js
-
--test: run Jest.
-
--serve:coverage: run test, redirect to coverage location and serve.
 
 
 
