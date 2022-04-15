@@ -9,3 +9,16 @@ export interface IHelloController {
 export interface IGoodbyeController{
     getMessage(name?: string): Promise<GoodbyeResponse>
 }
+
+export interface IUserController {
+    //Read all users from db || get user By Id
+    getUsers(id?: string): Promise<any>
+    //Delete User By Id
+    deleteUser(id?:string): Promise<any>
+    // Create new User
+    createUser(user: any): Promise<any>
+    // Update User
+    updateUserById(id:string, user: any): Promise<any>
+
+ 
+}
