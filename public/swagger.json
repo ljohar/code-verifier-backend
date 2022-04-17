@@ -72,7 +72,7 @@
 				"operationId": "GetUsers",
 				"responses": {
 					"200": {
-						"description": "Ok",
+						"description": "All users in the Collection or the specific user if Id",
 						"content": {
 							"application/json": {
 								"schema": {}
@@ -80,7 +80,93 @@
 						}
 					}
 				},
-				"description": "Endpoint to retrieve the Users in the Collection \"Users\" of DB",
+				"description": "Endpoint to retrieve the Users in the Collection \"Users\" od DB",
+				"tags": [
+					"UserController"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "of user to retreive (optional)",
+						"in": "query",
+						"name": "id",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"delete": {
+				"operationId": "DeleteUser",
+				"responses": {
+					"200": {
+						"description": "message informing if deletion was successful",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to delete the Users in the Collection \"Users\" of DB",
+				"tags": [
+					"UserController"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "of user to delete (optional)",
+						"in": "query",
+						"name": "id",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"post": {
+				"operationId": "CreateUser",
+				"responses": {
+					"200": {
+						"description": "a message if the creation was successful",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to create a new user",
+				"tags": [
+					"UserController"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "user",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "UpdateUserById",
+				"responses": {
+					"200": {
+						"description": "message informing if updating was successful",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to update an user",
 				"tags": [
 					"UserController"
 				],
@@ -89,7 +175,139 @@
 					{
 						"in": "query",
 						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "user",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/api/katas": {
+			"get": {
+				"operationId": "GetKatas",
+				"responses": {
+					"200": {
+						"description": "All katas in the collections or the specific kata if id",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to retreive all katas in the collection katas",
+				"tags": [
+					"KataController"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "of kata to retreive (optional)",
+						"in": "query",
+						"name": "id",
 						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"delete": {
+				"operationId": "DeleteKata",
+				"responses": {
+					"200": {
+						"description": "message informing if deletion was successfully",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to delete Katas in the Collection \"Katas\" of DB",
+				"tags": [
+					"KataController"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "of kata to delete (optional)",
+						"in": "query",
+						"name": "id",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"post": {
+				"operationId": "CreateKata",
+				"responses": {
+					"200": {
+						"description": "a message if the creation was successful",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to create a new Kata",
+				"tags": [
+					"KataController"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "kata",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "UpdateKataById",
+				"responses": {
+					"200": {
+						"description": "message informing if updating was successful",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"description": "Endpoint to update a Kata",
+				"tags": [
+					"KataController"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "kata",
+						"required": true,
 						"schema": {
 							"type": "string"
 						}

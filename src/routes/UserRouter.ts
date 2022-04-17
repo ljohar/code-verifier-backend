@@ -7,7 +7,7 @@ let usersRouter = express.Router();
 
 //http:localhost:8000/api/users?id=6256e3dd6d173f7b990593a5
 usersRouter.route('/')
-    //GET:
+    // GET:
     .get(async (req: Request, res: Response)=>{
         //Obtaion a Query Param (Id)
         let id: any = req.query?.id;
@@ -48,7 +48,7 @@ usersRouter.route('/')
     })
     // PUT
     .put(async (req: Request, res: Response) =>{
-        //Obtaion a Query Param (Id)
+        //Obtain a Query Param (Id)
         let id: any = req.query?.id;
         let name: any = req?.query.name;
         let email: any = req?.query.email;
@@ -74,5 +74,5 @@ usersRouter.route('/')
 
 // usersRouter.route('/:user-id') instead of query params
 
-//Export Hello Router
+//Export User Router
 export default usersRouter;

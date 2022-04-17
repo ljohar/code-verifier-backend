@@ -11,7 +11,7 @@ import { getAllUsers, getUsersById, deleteUserById, createUser, updateUserById }
 export class UserController implements IUserController{
     /**
      * Endpoint to retrieve the Users in the Collection "Users" od DB
-     * @param {string} id of user to retreive (optinal) 
+     * @param {string} id of user to retreive (optional) 
      * @returns All users in the Collection or the specific user if Id 
      */
     @Get("/")
@@ -30,9 +30,9 @@ export class UserController implements IUserController{
         return response;
     }
     /**
-     * Endpoint to delete the Users in the Collection "Users" od DB
-     * @param {string} id of user to delete (optinal) 
-     * @returns message informing if deletion was successfully
+     * Endpoint to delete the Users in the Collection "Users" of DB
+     * @param {string} id of user to delete (optional) 
+     * @returns message informing if deletion was successful
      */
     @Delete("/")
     public async deleteUser(@Query()id?: string): Promise<any> {
@@ -46,7 +46,7 @@ export class UserController implements IUserController{
                 }
             });
         }else{
-            LogWarning('[/api/users] Delete User Requesr without Id')
+            LogWarning('[/api/users] Delete User Request without Id')
             response = {
                 message: "Please, provide a valid Id"
             }
@@ -55,9 +55,13 @@ export class UserController implements IUserController{
         
         return response;
     }
-
+    /**
+     * Endpoint to create a new user
+     * @param user 
+     * @returns a message if the creation was successful
+     */
     @Post("/")
-    public async createUser(user: any): Promise<any> {
+    public async createUser(@Query()user: any): Promise<any> {
         
         let response: any = '';
         
@@ -70,9 +74,14 @@ export class UserController implements IUserController{
         return response;
         
     }
-    
+    /**
+     * Endpoint to update an user
+     * @param id 
+     * @param user 
+     * @returns message informing if updating was successful
+     */
     @Put("/")
-    public async updateUserById(id: string, user: any): Promise<any> {
+    public async updateUserById(@Query()id: string, @Query()user: any): Promise<any> {
         let response: any = '';
 
         if(id){
@@ -83,7 +92,7 @@ export class UserController implements IUserController{
                 }
             });
         }else{
-            LogWarning('[/api/users] Update User Requesr without Id')
+            LogWarning('[/api/users] Update User Request without Id')
             response = {
                 message: "Please provide a valid Id"
             }

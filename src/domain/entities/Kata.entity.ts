@@ -1,16 +1,16 @@
 import mongoose from "mongoose";
 
-export const kapaEntity = () => {
-    let kapaSchema = new mongoose.Schema(
+export const kataEntity = () => {
+    let kataSchema = new mongoose.Schema(
         {
             name: String,
             description: String,
             level: Number,
-            user: Number,
+            user: String,
             date: Date,
             valoration: Number,
-            Chances: Number
+            chances: Number
         }
     )
-    return mongoose.model('Katas', kapaSchema)
+    return mongoose.model('Katas', kataSchema)
 }
