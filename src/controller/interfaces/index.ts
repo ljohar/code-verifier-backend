@@ -1,3 +1,4 @@
+import { IUser } from "../../domain/interfaces/IUser.interface";
 import { BasicResponse } from "../types";
 import { GoodbyeResponse } from "../types";
 
@@ -36,4 +37,11 @@ export interface IKataController {
     sortKatasByRatings(): Promise<any>
     // Sort by chances
     sortKatasByChances(): Promise<any>
+}
+
+export interface IAuthController {
+    // register users
+    registerUser(user: IUser): Promise<any>
+    // login user
+    loginUser(auth: any): Promise<any>
 }

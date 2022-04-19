@@ -108,6 +108,7 @@ export const sortByRatings = async () : Promise<any[] | undefined> =>
     }
 }
 
+// TODO
 // Set a new valoration
 
 // export const valorateKatas = async(id: string, score: number) : Promise<any | undefined> => {

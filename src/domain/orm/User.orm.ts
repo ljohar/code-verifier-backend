@@ -1,5 +1,6 @@
 import  { userEntity } from "../entities/User.entity";
 import { LogSuccess, LogError } from "../../utils/logger";
+import { IUser } from "../interfaces/IUser.interface";
 
 //CRUD
 
@@ -71,7 +72,4 @@ export const updateUserById = async ( id: string, user: any): Promise<any | unde
         LogError(`[ORM ERROR]: Updating User ${id}: ${error}`); 
     }
 }
-//TODO
-//-Get User By ID
-//-Get User By Email
-//-Update User By ID
+

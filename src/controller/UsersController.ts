@@ -88,12 +88,14 @@ export class UserController implements IUserController{
             LogSuccess(`[/api/users] Update User By Id: ${id}`);
             await updateUserById(id,user).then((r) => { //or maybe a catch instead of .then
                 response = {
+                    
                     message: `User with id ${id} updated successfully`
                 }
             });
         }else{
             LogWarning('[/api/users] Update User Request without Id')
             response = {
+            
                 message: "Please provide a valid Id"
             }
             
