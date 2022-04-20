@@ -24,3 +24,12 @@ export type ErrorResponse = {
     message: string
 
 }
+
+/**
+ * Auth JSON response
+ */
+ export type AuthResponse = {
+    message: string,
+    token: string
+
+}

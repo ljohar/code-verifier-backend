@@ -35,6 +35,8 @@ Note: Please create a .env file with a new PORT environtment variable. Otherwise
 
 -mongoose: allows to create querys to DB and schemas
 
+body-parser: allows to read BODY from requests
+
 ### Dev
 
 -concurrently: run commands concurrently. It makes easier to run multiple commands. 

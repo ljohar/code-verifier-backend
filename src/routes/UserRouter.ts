@@ -3,11 +3,15 @@ import { UserController } from "../controller/UsersController";
 import { LogInfo } from "../utils/logger";
 import { IUser } from "../domain/interfaces/IUser.interface";
 
-// BCRYPT
-import bcrypt from 'bcrypt';
+
 
 //Router from express
 let usersRouter = express.Router();
+
+// Body Parser to read BODY from requests
+import bodyParser from "body-parser";
+
+let jsonParser = bodyParser.json();
 
 //http:localhost:8000/api/users?id=6256e3dd6d173f7b990593a5
 usersRouter.route('/')
@@ -32,27 +36,6 @@ usersRouter.route('/')
         const response: any = await controller.deleteUser(id);
         //Send to the client the response
         return res.status(200).send(response);
-    })
-    // POST:
-    .post(async (req: Request, res: Response) => {
-        let name: any = req?.query.name;
-        let email: any = req?.query.email;
-        let age: any = req?.query.age;
-
-        // let name2: any = req?.body?.name;
-        // LogInfo(`### NAME IN BODY: ${name2}`)
-        
-        //Controller Instance to execute method
-        const controller: UserController = new UserController();
-        let user = {
-            name: name || "default",
-            email: email || 'default email',
-            age: age || 18
-        }
-        //Obtain Response
-        const response: any = await controller.createUser(user);
-        //Send to the client the response
-        return res.status(201).send(response);
     })
     // PUT
     .put(async (req: Request, res: Response) =>{

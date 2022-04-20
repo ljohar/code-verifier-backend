@@ -2,9 +2,10 @@ import { Get, Delete, Route, Tags, Query, Post, Put} from "tsoa";
 import { IUserController } from "./interfaces";
 import { LogSuccess, LogError, LogInfo, LogWarning } from "../utils/logger";
 
-//ORM - Users Collection
-
+// ORM - Users Collection
 import { getAllUsers, getUsersById, deleteUserById, createUser, updateUserById } from "../domain/orm/User.orm"
+
+
 
 @Route("api/users")
 @Tags("UserController")
@@ -21,9 +22,12 @@ export class UserController implements IUserController{
         if(id){
             LogSuccess(`[/api/users] Get User By Id: ${id}`);
             response = await getUsersById(id);
+             // Remove the password
+             response.password = '';
         }else{
             LogSuccess('[/api/users] Get all users request')
             response = await getAllUsers();
+            // TODO remove passwords from response
             
         }
         
@@ -55,25 +59,7 @@ export class UserController implements IUserController{
         
         return response;
     }
-    /**
-     * Endpoint to create a new user
-     * @param user 
-     * @returns a message if the creation was successful
-     */
-    @Post("/")
-    public async createUser(@Query()user: any): Promise<any> {
-        
-        let response: any = '';
-        
-        await createUser(user).then((r) => {
-            LogSuccess(`[/api/users] Create user: ${user}`);
-            response = {
-                message: `User created sucessfully: ${user.name}`
-            }
-        })
-        return response;
-        
-    }
+    
     /**
      * Endpoint to update an user
      * @param id 
