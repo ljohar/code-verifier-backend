@@ -13,10 +13,13 @@ import bodyParser from "body-parser";
 
 let jsonParser = bodyParser.json();
 
+// JWT verifier MiddleWare
+import { verifyToken } from "../middlewares/verifyToken.middleware";
+
 //http:localhost:8000/api/users?id=6256e3dd6d173f7b990593a5
 usersRouter.route('/')
     // GET:
-    .get(async (req: Request, res: Response)=>{
+    .get(verifyToken, async (req: Request, res: Response)=>{
         //Obtaion a Query Param (Id)
         let id: any = req.query?.id;
         LogInfo(`Query Param: ${id}`);
@@ -27,7 +30,7 @@ usersRouter.route('/')
         //Send to the client the response
         return res.status(200).send(response);
     })// DELETE:
-    .delete(async (req: Request, res: Response)=>{
+    .delete(verifyToken, async (req: Request, res: Response)=>{
         let id: any = req.query?.id;
         LogInfo(`Query Param: ${id}`);
         //Controller Instance to execute method
@@ -38,7 +41,7 @@ usersRouter.route('/')
         return res.status(200).send(response);
     })
     // PUT
-    .put(async (req: Request, res: Response) =>{
+    .put(verifyToken, async (req: Request, res: Response) =>{
         //Obtain a Query Param (Id)
         let id: any = req.query?.id;
         let name: any = req?.query.name;

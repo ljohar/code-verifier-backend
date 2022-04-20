@@ -5,9 +5,12 @@ import { LogInfo } from "../utils/logger";
 //Router from express
 let katasRouter = express.Router();
 
+// MiddleWare
+import { verifyToken } from "../middlewares/verifyToken.middleware";
+
 katasRouter.route('/')
     // GET
-    .get(async (req: Request, res: Response)=>{
+    .get(verifyToken, async (req: Request, res: Response)=>{
         //Obtaion a Query Param (Id, level)
         let id: any = req.query?.id;
         let level: any = req.query?.level;
@@ -20,7 +23,7 @@ katasRouter.route('/')
         return res.send(response);
     })
     // DELETE:
-    .delete(async (req: Request, res: Response)=>{
+    .delete(verifyToken, async (req: Request, res: Response)=>{
         let id: any = req.query?.id;
         LogInfo(`Query Param: ${id}`);
         //Controller Instance to execute method
@@ -31,7 +34,7 @@ katasRouter.route('/')
         return res.send(response);
     })
     // POST:
-    .post(async (req: Request, res: Response) => {
+    .post(verifyToken, async (req: Request, res: Response) => {
         let name: any = req?.query.name;
         let description: any = req?.query.description;
         let user: any = req?.query.user;
@@ -54,7 +57,7 @@ katasRouter.route('/')
         return res.send(response);
     })
     // PUT:
-    .put(async (req: Request, res: Response) => {
+    .put(verifyToken, async (req: Request, res: Response) => {
         let id: any = req?.query.id;
         let name: any = req?.query.name;
         let description: any = req?.query.description;
@@ -81,7 +84,7 @@ katasRouter.route('/')
 
     katasRouter.route('/:newest')
     // GET - sort by newest
-    .get(async (req: Request, res: Response)=>{ 
+    .get(verifyToken, async (req: Request, res: Response)=>{ 
         //Controller Instance to execute method
         const controller: KataController = new KataController();
         //Obtain Response
@@ -92,7 +95,7 @@ katasRouter.route('/')
 
     katasRouter.route('/:rating')
     // GET - sort by newest
-    .get(async (req: Request, res: Response)=>{ 
+    .get(verifyToken, async (req: Request, res: Response)=>{ 
         //Controller Instance to execute method
         const controller: KataController = new KataController();
         //Obtain Response
@@ -103,7 +106,7 @@ katasRouter.route('/')
 
     katasRouter.route('/:chances')
     // GET - sort by newest
-    .get(async (req: Request, res: Response)=>{ 
+    .get(verifyToken, async (req: Request, res: Response)=>{ 
         //Controller Instance to execute method
         const controller: KataController = new KataController();
         //Obtain Response
