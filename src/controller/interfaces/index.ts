@@ -13,7 +13,7 @@ export interface IGoodbyeController{
 
 export interface IUserController {
     //Read all users from db || get user By Id
-    getUsers(id?: string): Promise<any>
+    getUsers(page: number, limit: number, id?: string): Promise<any>
     //Delete User By Id
     deleteUser(id?:string): Promise<any>
     // Update User
@@ -22,7 +22,7 @@ export interface IUserController {
 
 export interface IKataController {
     // Read all katas from db || get a specific kata by Id
-    getKatas(id?: string, level?:number): Promise<any>
+    getKatas(limit: number, page: number, id?: string, level?:number): Promise<any>
     // Delete Kata By Id
     deleteKata(id?:string): Promise<any>
     // Create Kata

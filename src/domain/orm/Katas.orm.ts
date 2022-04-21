@@ -1,15 +1,34 @@
 import { kataEntity } from "../entities/Kata.entity";
 import { LogError, LogSuccess } from "../../utils/logger";
+import { IKata } from "../interfaces/IKata.interface";
 
 // CRUD
 
-// - Get all users
+// - Get all katas
 
-export const getAllKatas = async (): Promise<any[] | undefined> => {
+export const getAllKatas = async (page: number, limit: number): Promise<any[] | undefined> => {
     try {
         let kataModel = kataEntity();
-        //Search all katas
-        return await kataModel.find({isDelete: false})
+
+        let response: any = {};
+
+        // Search all katas (using pagination)
+        await kataModel.find({isDelete: false})
+            .select('name chances description level score')
+            .limit(limit)
+            .skip((page-1)*limit)
+            .exec().then((katas: any[]) => {
+                response.katas = katas;
+            });
+
+        // Count total documents in collection "katas"
+        await kataModel.countDocuments().then((total: number) => {
+            response.totalPages = Math.ceil(total/limit);
+            response.currentPage = page;
+        })
+
+        return response
+
     } catch (error) {
         LogError(`[ORM ERROR]: Getting all katas: ${error}`)
         
@@ -20,8 +39,10 @@ export const getAllKatas = async (): Promise<any[] | undefined> => {
 export const getKataById = async (id: string) : Promise<any | undefined> => {
     try {
         let kataModel = kataEntity();
-        //Search all katas
-        return await kataModel.findById(id)
+
+        //Search kata By Id
+        return await kataModel.findById(id).select('name chances description level score')
+
     } catch (error) {
         LogError(`[ORM ERROR]: Getting kata by id: ${error}`)
         
@@ -72,10 +93,26 @@ export const updateKataById = async ( id: string, kata: any): Promise<any | unde
 
 // Filter katas by level
 
-export const filterByLevel = async (level: number) : Promise<any[] | undefined> => {
+export const filterByLevel = async (page: number, limit: number, level: number) : Promise<any[] | undefined> => {
     try {
         let kataModel = kataEntity();
-        return await kataModel.find({"level": level}).limit(5)
+
+        let response: any = {};
+
+        await kataModel.find({"level": level})
+            .select('name chances description level score')
+            .limit(limit)
+            .skip((page-1)*limit)
+            .exec().then((katas: any[]) => {
+                response.katas = katas;
+            });
+
+        // Count total documents in collection "katas" by level
+        await kataModel.countDocuments().then((total: number) => {
+            response.totalPages = Math.ceil(total/limit);
+            response.currentPage = page;
+        })
+        return response
         
     } catch (error) {
         
