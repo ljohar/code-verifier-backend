@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express'
+import { getUserByEmail } from '../domain/orm/User.orm';
 
 import dotenv from 'dotenv';
 
@@ -30,14 +31,18 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
         
     }
       
-    // Verifi the token obtained, we pass the secret
-    jwt.verify(token, secret, (err: any, decoded: any) => {
+    // Verify the token obtained, we pass the secret
+    jwt.verify(token, secret, async (err: any, decoded: any) => {
         if(err){
             return res.status(500).send({
                 authenticationError: 'JWT verification failed',
                 message: 'Failed to verify JWT token'
             })
         }
+
+        // TODO retreive logged in user data
+        let loggedUser = await getUserByEmail(decoded.email);
+        res.locals.loggedUser = loggedUser;
 
         //Execute Next function --> Protected routes wil be executed
         next();

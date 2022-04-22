@@ -2,9 +2,15 @@ import { kataEntity } from "../entities/Kata.entity";
 import { LogError, LogSuccess } from "../../utils/logger";
 import { IKata } from "../interfaces/IKata.interface";
 
+// Environment variables
+import dotenv from 'dotenv';
+
+// Configuration of  environment variables
+dotenv.config();
+
 // CRUD
 
-// - Get all katas
+// - Get all katas from collection "Katas" in Mongo Server
 
 export const getAllKatas = async (page: number, limit: number): Promise<any[] | undefined> => {
     try {
@@ -14,10 +20,9 @@ export const getAllKatas = async (page: number, limit: number): Promise<any[] | 
 
         // Search all katas (using pagination)
         await kataModel.find({isDelete: false})
-            .select('name chances description level score')
             .limit(limit)
             .skip((page-1)*limit)
-            .exec().then((katas: any[]) => {
+            .exec().then((katas: IKata[]) => {
                 response.katas = katas;
             });
 
@@ -41,7 +46,7 @@ export const getKataById = async (id: string) : Promise<any | undefined> => {
         let kataModel = kataEntity();
 
         //Search kata By Id
-        return await kataModel.findById(id).select('name chances description level score')
+        return await kataModel.findById(id)
 
     } catch (error) {
         LogError(`[ORM ERROR]: Getting kata by id: ${error}`)
@@ -49,11 +54,11 @@ export const getKataById = async (id: string) : Promise<any | undefined> => {
     }
 }
 
-// - Delete User By ID
+// - Delete Kata By ID
 export const deleteKataById = async (id: string): Promise<any | undefined> =>{
     try {
         let kataModel = kataEntity();
-        // Delete User By Id 
+        // Delete Kata By Id 
         return await kataModel.deleteOne({_id: id})
     } catch (error) {
         LogError(`[ORM ERROR]: Deleting Kata By Id: ${error}`);    
@@ -62,13 +67,12 @@ export const deleteKataById = async (id: string): Promise<any | undefined> =>{
 }
 
 // - Create a New Kata
-
-export const createKata = async (kata: any): Promise<any | undefined> => {
+export const createKata = async (kata: IKata): Promise<any | undefined> => {
     try {
 
         let kataModel = kataEntity();
 
-        //Create / Insert new user
+        //Create / Insert new kata
 
         return await kataModel.create(kata);
         
@@ -79,7 +83,7 @@ export const createKata = async (kata: any): Promise<any | undefined> => {
 
 // - Update Kata By Id
 
-export const updateKataById = async ( id: string, kata: any): Promise<any | undefined> => {
+export const updateKataById = async ( id: string, kata: IKata): Promise<any | undefined> => {
     try {
         let kataModel = kataEntity();
 
@@ -93,7 +97,7 @@ export const updateKataById = async ( id: string, kata: any): Promise<any | unde
 
 // Filter katas by level
 
-export const filterByLevel = async (page: number, limit: number, level: number) : Promise<any[] | undefined> => {
+export const filterByLevel = async (page: number, limit: number, level: string) : Promise<any[] | undefined> => {
     try {
         let kataModel = kataEntity();
 
@@ -145,8 +149,8 @@ export const sortByRatings = async () : Promise<any[] | undefined> =>
     }
 }
 
-// TODO
-// Set a new valoration
+// TODO rename score property and save average --> group/then
+
 
 // export const valorateKatas = async(id: string, score: number) : Promise<any | undefined> => {
 //     try {

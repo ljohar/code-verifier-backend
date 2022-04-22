@@ -3,13 +3,14 @@ import { IUserController } from "./interfaces";
 import { LogSuccess, LogError, LogInfo, LogWarning } from "../utils/logger";
 
 // ORM - Users Collection
-import { getAllUsers, getUsersById, deleteUserById, createUser, updateUserById } from "../domain/orm/User.orm"
+import { getAllUsers, getUsersById, deleteUserById, updateUserById, getKatasFromUser } from "../domain/orm/User.orm"
 
 
 
 @Route("api/users")
 @Tags("UserController")
 export class UserController implements IUserController{
+    
     /**
      * Endpoint to retrieve the Users in the Collection "Users" od DB
      * @param {string} id of user to retreive (optional) 
@@ -30,6 +31,29 @@ export class UserController implements IUserController{
         }
         
         return response;
+    }
+
+    /**
+     * Endpoint to retrieve the Katas of a user
+     * @param {string} id of user 
+     * @returns All users in the Collection or the specific user if Id 
+     */
+    @Get('/katas')
+    public async getKatas(@Query()page: number, @Query()limit: number,id: string): Promise<any> {
+        let response: any = '';
+        if(id){
+            LogSuccess(`[/api/users/katas] Get katas from User by ID: ${id}`);
+            response = await getKatasFromUser(page, limit, id);
+             
+        }else{
+            LogSuccess('[/api/users/katas] Get all katas without id')
+            response = {
+                message: 'User ID is needed'
+            }        
+        }
+        
+        return response;     
+        
     }
     /**
      * Endpoint to delete the Users in the Collection "Users" of DB

@@ -1,6 +1,7 @@
 import { Get, Delete, Route, Tags, Query, Post, Put} from "tsoa";
 import { IKataController } from "./interfaces";
 import { LogSuccess, LogError, LogInfo, LogWarning } from "../utils/logger";
+import { IKata } from "../domain/interfaces/IKata.interface";
 
 // ORM - Katas Collection
 
@@ -8,16 +9,16 @@ import { getAllKatas, getKataById, deleteKataById, createKata, updateKataById, f
 import { response } from "express";
 
 @Route("api/katas")
-@Tags("KataController")
+@Tags("KatasController")
 export class KataController implements IKataController{
     
     /**
      * Endpoint to retreive all katas in the collection katas
      * @param {string} id of kata to retreive (optional)
-     * @returns All katas in the collections or the specific kata if id 
+     * @returns All katas in the collections or the specific kata found by id
      */
     @Get("/")
-    public async getKatas(@Query()page: number, @Query()limit: number,@Query()id?: string, @Query()level?:number): Promise<any> {
+    public async getKatas(@Query()page: number, @Query()limit: number,@Query()id?: string, @Query()level?: string): Promise<any> {
         let response: any = '';
 
         if(id){
@@ -79,7 +80,7 @@ export class KataController implements IKataController{
     /**
      * Endpoint to delete Katas in the Collection "Katas" of DB
      * @param {string} id of kata to delete (optional) 
-     * @returns message informing if deletion was successfully
+     * @returns message informing if deletion was correct
      */
      @Delete("/")
      public async deleteKata(@Query()id?: string, level?: string): Promise<any> {
@@ -95,7 +96,7 @@ export class KataController implements IKataController{
          }else{
              LogWarning('[/api/katas] Delete Kata Request without Id')
              response = {
-                 message: "Please, provide a valid Id"
+                 message: "Please, provide an ID to remove from database"
              }
              
          }
@@ -109,16 +110,26 @@ export class KataController implements IKataController{
       */
 
      @Post("/")
-    public async createKata(@Query()kata: any): Promise<any> {
+    public async createKata(@Query()kata: IKata): Promise<any> {
         
         let response: any = '';
-        
-        await createKata(kata).then((r) => {
-            LogSuccess(`[/api/katas] Create kata: ${kata}`);
+
+        if(kata){
+            LogSuccess(`[/api/katas] Create New Kata: ${kata.name}`);
+            await createKata(kata).then((r) => {
+                LogSuccess(`[/api/katas] Created Kata: ${kata.name}`);
+                response = {
+                    message: `Kata created sucessfully: ${kata.name}`
+                }
+            });
+            
+        }else{
+            LogWarning('[/api/katas] Register needs Kata Entity')
             response = {
-                message: `Kata created sucessfully: ${kata.name}`
+                message: "Kata not registered: Please provide a Kata entity to create one"
             }
-        })
+            
+        }
         return response;
      }
     /**
@@ -128,7 +139,8 @@ export class KataController implements IKataController{
      * @returns message informing if updating was successful
      */
     @Put("/")
-    public async updateKataById(@Query()id: string, @Query()kata: any): Promise<any> {
+    public async updateKataById(@Query()id: string, @Query()kata: IKata): Promise<any> {
+        
         let response: any = '';
 
         if(id){

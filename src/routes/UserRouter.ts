@@ -67,9 +67,27 @@ usersRouter.route('/')
 
         //Send to the client the response
         return res.status(200).send(response);
-        // A 204 status wouldn't return the message
+        // A 204 status wouldn't return a message
 
-    })
+    });
+
+usersRouter.route('/katas')
+    .get(verifyToken, async (req: Request, res: Response) => {
+        //Obtaion a Query Param (Id)
+        let id: any = req.query?.id;
+        
+        // Pagination
+        let page: any = req.query?.page || 1;
+        let limit: any = req.query?.limit || 10;
+
+        //Controller Instance to execute method
+        const controller: UserController = new UserController();
+        //Obtain Response
+        const response: any = await controller.getKatas(page, limit, id);
+        //Send to the client the response
+        return res.status(200).send(response);
+    });
+
 
 
 

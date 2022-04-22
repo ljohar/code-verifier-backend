@@ -32,7 +32,8 @@ authRouter.route('/register')
             name: name,
             email: email,
             password: hashedPassword,
-            age: age
+            age: age,
+            katas: []
         }
 
         //Controller Instance to execute method
@@ -87,8 +88,8 @@ authRouter.route('/login')
 authRouter.route('/me')
     .get(verifyToken, async (req: Request, res: Response) => {
 
-        // Obtain the ID of user to check it's data
-        let id: any = req?.query?.id;
+        // Obtain the logged in User ID 
+        let id: any = res.locals.loggedUser?._id
 
         if(id) {
             // Controller: Auth COntroller
@@ -113,5 +114,5 @@ authRouter.route('/me')
 
 
 
-//Export Users Router
+//Export Auth Router
 export default authRouter;

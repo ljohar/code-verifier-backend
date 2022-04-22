@@ -1,11 +1,17 @@
 import express, { Request, Response } from "express";
 import { KataController } from "../controller/KatasController";
 import { LogInfo } from "../utils/logger";
+import { IKata, KataLevel } from "../domain/interfaces/IKata.interface";
 
 //Router from express
 let katasRouter = express.Router();
 
-// MiddleWare
+// Body Parser to read BODY from requests
+import bodyParser from "body-parser";
+
+let jsonParser = bodyParser.json();
+
+// JWT verifier MiddleWare
 import { verifyToken } from "../middlewares/verifyToken.middleware";
 
 katasRouter.route('/')
@@ -31,60 +37,117 @@ katasRouter.route('/')
     .delete(verifyToken, async (req: Request, res: Response)=>{
         let id: any = req.query?.id;
         LogInfo(`Query Param: ${id}`);
-        //Controller Instance to execute method
+        // Controller Instance to execute method
         const controller: KataController = new KataController();
-        //Obtain Response
+        // Obtain Response
         const response: any = await controller.deleteKata(id);
-        //Send to the client the response
+        // Send to the client the response
         return res.send(response);
     })
     // POST:
-    .post(verifyToken, async (req: Request, res: Response) => {
-        let name: any = req?.query.name;
-        let description: any = req?.query.description;
-        let user: any = req?.query.user;
-        let chances: any = req?.query.chances;
-        let valoration: any = req?.query.valoration;
-        //Controller Instance to execute method
-        const controller: KataController = new KataController();
-        let kata = {
-            name: name || "default",
-            description: description || 'No description',
-            user: user || "default user",
-            date: Date(),
-            chances: chances || 0, 
-            valoration: valoration || 0
+    .post(jsonParser, verifyToken, async (req: Request, res: Response) => {
+        // TODO read requests from body 
+        // TODO asign user_id using locals
+        // Read from body 
+        let name: string = req?.body?.name;
+        let description: string = req?.body?.description || '';
+        let level: KataLevel = req?.body?.level || KataLevel.BASIC;
+        let intents: number = req?.body?.intents || 0;
+        let stars: number = req?.body?.stars || 0;
+        let creator: string = req?.body?.creator;
+        let solution: string = req?.body?.solution || '';
+        let participants: string[] = req?.body?.participants || [];
+        
 
+        // TODO create methods tu sum up stars and intents
+
+        if(name && description && level && intents >= 0 && stars >= 0 && creator && solution && participants){
+            
+            //Controller Instance to execute method
+            const controller: KataController = new KataController();
+            
+            let kata: IKata = {
+                name: name || "default",
+                description: description || 'No description',
+                level: level,
+                intents: intents, 
+                stars: stars,
+                creator: creator,
+                solution: solution,
+                participants: participants
+            }
+
+            //Obtain Response
+            const response: any = await controller.createKata(kata);
+
+            //Send to the client the response
+            return res.status(201).send(response);
+
+        }else{
+            return res.status(400).send({
+                message: '[ERROR] Creating Kata. All kata fields are required'
+            });
         }
-        //Obtain Response
-        const response: any = await controller.createKata(kata);
-        //Send to the client the response
-        return res.send(response);
+        
     })
     // PUT:
-    .put(verifyToken, async (req: Request, res: Response) => {
+    .put(jsonParser, verifyToken, async (req: Request, res: Response) => {
+        // Obtain a query param (ID)
         let id: any = req?.query.id;
-        let name: any = req?.query.name;
-        let description: any = req?.query.description;
-        let user: any = req?.query.user;
-        let chances: any = req?.query.chances;
-        let valoration: any = req?.query.valoration;
-        LogInfo(`Query Params: ${name}, ${description}, ${user}, ${chances}, ${valoration}`);
-        //Controller Instance to execute method
-        const controller: KataController = new KataController();
-        let kata = {
+
+        // Read from body 
+        let name: string = req?.body?.name;
+        let description: string = req?.body?.description || 'Default description';
+        let level: KataLevel = req?.body?.level || KataLevel.BASIC;
+        let intents: number = req?.body?.intents || 0;
+        let stars: number = req?.body?.stars || 0;
+        let creator: string = req?.body?.creator;
+        let solution: string = req?.body?.solution || 'Default solution';
+        let participants: string[] = req?.body?.participants || [];
+        
+        let kataSent: IKata = {
             name: name || "default",
             description: description || 'No description',
-            user: user || "default user",
-            date: Date(),
-            chances: chances || 0, 
-            valoration: valoration || 0
-
+            level: level,
+            intents: intents, 
+            stars: stars,
+            creator: creator,
+            solution: solution,
+            participants: participants
         }
-        //Obtain Response
-        const response: any = await controller.updateKataById(id, kata);
-        //Send to the client the response
-        return res.send(response);
+
+        console.log('Kata:', kataSent);
+
+        // TODO create methods tu sum up stars and intents
+        // TODO keep creator, it shouldn't be passed through the body
+
+        if(name && description && level && intents >= 0 && stars >= 0 && creator && solution && participants){
+            //Controller Instance to execute method
+            const controller: KataController = new KataController();
+            
+            let kata: IKata = {
+                name: name || "default",
+                description: description || 'No description',
+                level: level,
+                intents: intents, 
+                stars: stars,
+                creator: creator,
+                solution: solution,
+                participants: participants
+            }
+
+            //Obtain Response
+            const response: any = await controller.updateKataById(id, kata);
+
+            //Send to the client the response
+            return res.send(response);
+
+        }else{
+            return res.status(400).send({
+                message: '[ERROR] Updating Kata. All kata fields are required'
+            });
+        }
+        
     })
 
     katasRouter.route('/:newest')
