@@ -46,20 +46,17 @@ katasRouter.route('/')
     })
     // POST:
     .post(jsonParser, verifyToken, async (req: Request, res: Response) => {
-        // TODO read requests from body 
-        // TODO asign user_id using locals
         // Read from body 
         let name: string = req?.body?.name;
         let description: string = req?.body?.description || '';
         let level: KataLevel = req?.body?.level || KataLevel.BASIC;
         let intents: number = req?.body?.intents || 0;
         let stars: number = req?.body?.stars || 0;
-        let creator: string = req?.body?.creator;
+        let creator: string = res.locals.loggedUser._id;
         let solution: string = req?.body?.solution || '';
         let participants: string[] = req?.body?.participants || [];
+        let stars_array: number[] = []
         
-
-        // TODO create methods tu sum up stars and intents
 
         if(name && description && level && intents >= 0 && stars >= 0 && creator && solution && participants){
             
@@ -74,7 +71,8 @@ katasRouter.route('/')
                 stars: stars,
                 creator: creator,
                 solution: solution,
-                participants: participants
+                participants: participants,
+                stars_array: stars_array
             }
 
             //Obtain Response
@@ -104,6 +102,7 @@ katasRouter.route('/')
         let creator: string = req?.body?.creator;
         let solution: string = req?.body?.solution || 'Default solution';
         let participants: string[] = req?.body?.participants || [];
+        let stars_array: number[] = []
         
         let kataSent: IKata = {
             name: name || "default",
@@ -113,7 +112,8 @@ katasRouter.route('/')
             stars: stars,
             creator: creator,
             solution: solution,
-            participants: participants
+            participants: participants,
+            stars_array: stars_array
         }
 
         console.log('Kata:', kataSent);
@@ -133,7 +133,8 @@ katasRouter.route('/')
                 stars: stars,
                 creator: creator,
                 solution: solution,
-                participants: participants
+                participants: participants,
+                stars_array: stars_array
             }
 
             //Obtain Response

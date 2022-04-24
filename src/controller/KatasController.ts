@@ -1,7 +1,7 @@
 import { Get, Delete, Route, Tags, Query, Post, Put} from "tsoa";
 import { IKataController } from "./interfaces";
 import { LogSuccess, LogError, LogInfo, LogWarning } from "../utils/logger";
-import { IKata } from "../domain/interfaces/IKata.interface";
+import { IKata, KataLevel } from "../domain/interfaces/IKata.interface";
 
 // ORM - Katas Collection
 
@@ -18,7 +18,7 @@ export class KataController implements IKataController{
      * @returns All katas in the collections or the specific kata found by id
      */
     @Get("/")
-    public async getKatas(@Query()page: number, @Query()limit: number,@Query()id?: string, @Query()level?: string): Promise<any> {
+    public async getKatas(@Query()page: number, @Query()limit: number,@Query()id?: string, @Query()level?: KataLevel): Promise<any> {
         let response: any = '';
 
         if(id){

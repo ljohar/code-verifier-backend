@@ -12,5 +12,6 @@ export interface IKata {
     stars: number,
     creator: string, // Id of user
     solution: string,
-    participants: string[]   
+    participants: string[],
+    stars_array: number[]  
 }

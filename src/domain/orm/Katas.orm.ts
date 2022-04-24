@@ -1,6 +1,6 @@
 import { kataEntity } from "../entities/Kata.entity";
 import { LogError, LogSuccess } from "../../utils/logger";
-import { IKata } from "../interfaces/IKata.interface";
+import { IKata, KataLevel } from "../interfaces/IKata.interface";
 
 // Environment variables
 import dotenv from 'dotenv';
@@ -97,14 +97,14 @@ export const updateKataById = async ( id: string, kata: IKata): Promise<any | un
 
 // Filter katas by level
 
-export const filterByLevel = async (page: number, limit: number, level: string) : Promise<any[] | undefined> => {
+export const filterByLevel = async (page: number, limit: number, level: KataLevel) : Promise<any[] | undefined> => {
     try {
         let kataModel = kataEntity();
 
         let response: any = {};
 
         await kataModel.find({"level": level})
-            .select('name chances description level score')
+            .sort({"stars": -1})
             .limit(limit)
             .skip((page-1)*limit)
             .exec().then((katas: any[]) => {
@@ -123,6 +123,7 @@ export const filterByLevel = async (page: number, limit: number, level: string) 
         LogError(`[ORM ERROR]: Getting Katas by level ${error}`); 
     }
 }
+
 
 // Sort katas by creation date
 
@@ -149,19 +150,6 @@ export const sortByRatings = async () : Promise<any[] | undefined> =>
     }
 }
 
-// TODO rename score property and save average --> group/then
-
-
-// export const valorateKatas = async(id: string, score: number) : Promise<any | undefined> => {
-//     try {
-//         let kataModel = kataEntity();
-//         return await kataModel.updateOne({id}, {$set:{score: {$sum: score}},{num_user: {$sum: 1}}})
-        
-//     } catch (error) {
-//         LogError(`[ORM ERROR]: Valorating a kata ${error}`)
-//     }
-// }
-
 // Sort katas by chances
 
 export const sortByChances = async () : Promise<any[] | undefined> => {
@@ -171,5 +159,17 @@ export const sortByChances = async () : Promise<any[] | undefined> => {
         
     } catch (error) {
         LogError(`[ORM ERROR]: Sorting Kata by chances ${error}`)
+    }
+}
+
+// Add stars
+
+export const addStars = async (id: string, user_star: number) : Promise<any | undefined> => {
+    try {
+        let kataModel = kataEntity();
+        return await kataModel.updateOne({_id: id}, {$push: {stars: user_star}})
+        
+    } catch (error) {
+        LogError(`[ORM ERROR]: Adding stars ${error}`)
     }
 }

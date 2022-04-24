@@ -79,7 +79,6 @@ export const deleteUserById = async (id: string): Promise<any | undefined> =>{
     }
 }
 
-
 // - Update User By Id
 
 export const updateUserById = async ( id: string, user: any): Promise<any | undefined> => {
@@ -108,8 +107,6 @@ export const updateUserById = async ( id: string, user: any): Promise<any | unde
             katas: []
         };
 
-        console.log('User ID', id);
-
         await userModel.findById(id).then(async (user: IUser) => {
 
             response.user = user.email;
@@ -130,12 +127,9 @@ export const updateUserById = async ( id: string, user: any): Promise<any | unde
             LogError(`[ORM ERROR]: Obtaining User: ${error}`); 
         })
 
-        console.log('Katas Found', katasFound);
-
         response.katas = katasFound;
 
-        return response;
-        
+        return response;     
         
     } catch (error) {
         LogError(`[ORM ERROR]: Getting katas from an user: ${error}`)
