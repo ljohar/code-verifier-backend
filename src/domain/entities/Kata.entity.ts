@@ -12,7 +12,7 @@ export const kataEntity = () => {
             creator: {type: String, required: true},
             solution: {type: String, required: true},
             participants: {type: [], required: true},
-            stars_array: {type: [], required: true },
+            sarray: {type: [], required: true },
         }
     )
     return mongoose.models.Katas || mongoose.model<IKata>('Katas', kataSchema)

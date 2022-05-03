@@ -40,19 +40,6 @@ export const getAllKatas = async (page: number, limit: number): Promise<any[] | 
     }
 }
 
-// - Get Kata By Id
-export const getKataById = async (id: string) : Promise<any | undefined> => {
-    try {
-        let kataModel = kataEntity();
-
-        //Search kata By Id
-        return await kataModel.findById(id)
-
-    } catch (error) {
-        LogError(`[ORM ERROR]: Getting kata by id: ${error}`)
-        
-    }
-}
 
 // - Delete Kata By ID
 export const deleteKataById = async (id: string): Promise<any | undefined> =>{
@@ -92,6 +79,20 @@ export const updateKataById = async ( id: string, kata: IKata): Promise<any | un
         
     } catch (error) {
         LogError(`[ORM ERROR]: Updating Kata ${id}: ${error}`); 
+    }
+}
+
+// - Get Kata By Id
+
+export const getKataById = async (id: string) : Promise<any | undefined> => {
+    try {
+        let kataModel = kataEntity();
+
+        //Search kata by Id
+        return await kataModel.findOne({"_id": id});
+
+    } catch (error) {
+        LogError(`[ORM ERROR]: Getting Kata By Id: ${error}`); 
     }
 }
 
@@ -167,7 +168,7 @@ export const sortByChances = async () : Promise<any[] | undefined> => {
 export const addStars = async (id: string, user_star: number) : Promise<any | undefined> => {
     try {
         let kataModel = kataEntity();
-        return await kataModel.updateOne({_id: id}, {$push: {stars: user_star}})
+        return await kataModel.findOne({_id: id}, {$push: {stars_array: user_star}});
         
     } catch (error) {
         LogError(`[ORM ERROR]: Adding stars ${error}`)

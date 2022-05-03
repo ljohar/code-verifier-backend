@@ -5,7 +5,7 @@ import { IKata, KataLevel } from "../domain/interfaces/IKata.interface";
 
 // ORM - Katas Collection
 
-import { getAllKatas, getKataById, deleteKataById, createKata, updateKataById, filterByLevel, sortByNewest, sortByRatings, sortByChances } from "../domain/orm/Katas.orm";
+import { getAllKatas, getKataById, deleteKataById, createKata, updateKataById, filterByLevel, sortByNewest, sortByRatings, sortByChances, addStars } from "../domain/orm/Katas.orm";
 import { response } from "express";
 
 @Route("api/katas")
@@ -160,6 +160,35 @@ export class KataController implements IKataController{
         
         return response;
     }
+
+    /**
+     * Endpoint to add stars to a kata
+     * @param id 
+     * @param kata 
+     * @returns message informing if updating was successful
+     */
+     @Put("/")
+     public async addStars(@Query()id: string, @Query()user_star: number): Promise<any> {
+         
+         let response: any = '';
+ 
+         if(id){
+             LogSuccess(`[/api/katas] Push stars to Kata with Id: ${id}`);
+             await addStars(id, user_star).then((r) => {        
+                 response = {
+                     message: `Stars were added to Kata with Id: ${id}`
+                 }
+             });
+         }else{
+             LogWarning('[/api/katas] Push stars to Kata Request without Id')
+             response = {
+                 message: "Please provide a valid Id"
+             }
+             
+         }
+         
+         return response;
+     }
 
     
     

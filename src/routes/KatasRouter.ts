@@ -14,6 +14,7 @@ let jsonParser = bodyParser.json();
 // JWT verifier MiddleWare
 import { verifyToken } from "../middlewares/verifyToken.middleware";
 
+
 katasRouter.route('/')
     // GET
     .get(verifyToken, async (req: Request, res: Response)=>{
@@ -55,7 +56,7 @@ katasRouter.route('/')
         let creator: string = res.locals.loggedUser._id;
         let solution: string = req?.body?.solution || '';
         let participants: string[] = req?.body?.participants || [];
-        let stars_array: number[] = []
+        let sarray: number[] = []
         
 
         if(name && description && level && intents >= 0 && stars >= 0 && creator && solution && participants){
@@ -72,7 +73,7 @@ katasRouter.route('/')
                 creator: creator,
                 solution: solution,
                 participants: participants,
-                stars_array: stars_array
+                sarray: sarray
             }
 
             //Obtain Response
@@ -90,8 +91,28 @@ katasRouter.route('/')
     })
     // PUT:
     .put(jsonParser, verifyToken, async (req: Request, res: Response) => {
-        // Obtain a query param (ID)
+        //Obtaion a Query Param (Id)
         let id: any = req?.query.id;
+
+        // Obtain the logged in User ID 
+        let userId: any = res.locals.loggedUser?._id
+
+
+        // Obtain Kata creator
+        // Controller Instance to execute methods
+        const controller: KataController = new KataController();
+        let creator: any = ""
+
+        // TODO EXTRACT ANOTHER PROPERTIES THAT SHOULDN'T BE MODIFIED
+        await controller.getKatas(1,1,id).then((kata:any) => {
+            creator = kata.creator
+            console.log('kata creator:', creator, kata.creator );
+            console.log('User ID:', userId);
+            console.log('Verifing kata creator:', userId == creator);
+        } );
+
+        
+        
 
         // Read from body 
         let name: string = req?.body?.name;
@@ -99,10 +120,9 @@ katasRouter.route('/')
         let level: KataLevel = req?.body?.level || KataLevel.BASIC;
         let intents: number = req?.body?.intents || 0;
         let stars: number = req?.body?.stars || 0;
-        let creator: string = req?.body?.creator;
         let solution: string = req?.body?.solution || 'Default solution';
         let participants: string[] = req?.body?.participants || [];
-        let stars_array: number[] = []
+        let sarray: number[] = []
         
         let kataSent: IKata = {
             name: name || "default",
@@ -113,39 +133,46 @@ katasRouter.route('/')
             creator: creator,
             solution: solution,
             participants: participants,
-            stars_array: stars_array
+            sarray: sarray
         }
 
-        console.log('Kata:', kataSent);
+        console.log('Kata sent:', kataSent);
+        
 
         // TODO create methods tu sum up stars and intents
-        // TODO keep creator, it shouldn't be passed through the body
+        
 
-        if(name && description && level && intents >= 0 && stars >= 0 && creator && solution && participants){
-            //Controller Instance to execute method
-            const controller: KataController = new KataController();
-            
-            let kata: IKata = {
-                name: name || "default",
-                description: description || 'No description',
-                level: level,
-                intents: intents, 
-                stars: stars,
-                creator: creator,
-                solution: solution,
-                participants: participants,
-                stars_array: stars_array
+        if(userId == creator){
+
+            if(name && description && level && intents >= 0 && stars >= 0 && solution && participants){
+    
+                let kata: IKata = {
+                    name: name || "default",
+                    description: description || 'No description',
+                    level: level,
+                    intents: intents, 
+                    stars: stars,
+                    creator: creator,
+                    solution: solution,
+                    participants: participants,
+                    sarray: sarray
+                }   
+    
+            // Obtain response
+            const response: any = await controller.updateKataById(id, kata)
+    
+            // send to the client the response 
+            return res.send(response);   
+    
+            }else{
+                return res.status(400).send({
+                    message: '[ERROR] Updating Kata. All kata fields are required'
+                });
             }
-
-            //Obtain Response
-            const response: any = await controller.updateKataById(id, kata);
-
-            //Send to the client the response
-            return res.send(response);
 
         }else{
             return res.status(400).send({
-                message: '[ERROR] Updating Kata. All kata fields are required'
+                message: '[ERROR] Updating Kata. User is not authorized to make modifications to this entry'
             });
         }
         

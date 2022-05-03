@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import { UserController } from "../controller/UsersController";
+import { KataController } from "../controller/KatasController";
 import { LogInfo } from "../utils/logger";
 import { IUser } from "../domain/interfaces/IUser.interface";
 
@@ -73,7 +74,7 @@ usersRouter.route('/')
 
 usersRouter.route('/katas')
     .get(verifyToken, async (req: Request, res: Response) => {
-        //Obtaion a Query Param (Id)
+        //Obtain a Query Param (Id)
         let id: any = req.query?.id;
         
         // Pagination
@@ -88,7 +89,22 @@ usersRouter.route('/katas')
         return res.status(200).send(response);
     });
 
+usersRouter.route('/katas/stars')
+    .get(verifyToken, async (req: Request, res: Response) => {
+        // Obtain query Param (Kata Id and user stars)
+        let id: any = req.query?.id;
+        let user_star: any = req.query?.user_star;
+        LogInfo(`Query Params: ${id} and ${user_star}`);
 
+        //Controller Instance to execute method
+        const controller: KataController = new KataController();
+        //Obtain Response
+        const response: any = await controller.addStars(id, user_star);
+        //Send to the client the response
+        return res.status(200).send(response);
+
+
+    });
 
 
 

@@ -40,7 +40,7 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
             })
         }
 
-        // TODO retreive logged in user data
+        // Retrieve logged in user data
         let loggedUser = await getUserByEmail(decoded.email);
         res.locals.loggedUser = loggedUser;
 
