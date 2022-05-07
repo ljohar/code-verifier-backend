@@ -38,12 +38,30 @@ katasRouter.route('/')
     .delete(verifyToken, async (req: Request, res: Response)=>{
         let id: any = req.query?.id;
         LogInfo(`Query Param: ${id}`);
-        // Controller Instance to execute method
+
+        // Obtain the logged in User ID 
+        let userId: any = res.locals.loggedUser?._id
+
+        // Obtain Kata creator
+        // Controller Instance to execute methods
         const controller: KataController = new KataController();
-        // Obtain Response
-        const response: any = await controller.deleteKata(id);
-        // Send to the client the response
-        return res.send(response);
+        let creator: any = ""
+
+        await controller.getKatas(1,1,id).then((kata:any) => {
+            creator = kata.creator
+        } );
+
+        if(userId == creator){
+            // Obtain Response
+            const response: any = await controller.deleteKata(id);
+            // Send to the client the response
+            return res.send(response);
+        }else{
+            return res.status(400).send({
+                message: '[ERROR] Deleting Kata. User is not authorized to delete this entry'
+            });
+        }
+        
     })
     // POST:
     .post(jsonParser, verifyToken, async (req: Request, res: Response) => {
@@ -105,9 +123,9 @@ katasRouter.route('/')
         // TODO EXTRACT ANOTHER PROPERTIES THAT SHOULDN'T BE MODIFIED
         await controller.getKatas(1,1,id).then((kata:any) => {
             creator = kata.creator
-            console.log('kata creator:', creator, kata.creator );
-            console.log('User ID:', userId);
-            console.log('Verifing kata creator:', userId == creator);
+            // console.log('kata creator:', creator, kata.creator );
+            // console.log('User ID:', userId);
+            // console.log('Verifing kata creator:', userId == creator);
         } );
 
         // Read from body 
