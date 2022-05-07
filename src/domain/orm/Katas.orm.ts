@@ -144,7 +144,7 @@ export const sortByRatings = async () : Promise<any[] | undefined> =>
 {
     try {
         let kataModel = kataEntity();
-        return await kataModel.find().sort({score: -1})
+        return await kataModel.find().sort({stars: -1})
         
     } catch (error) {
         LogError(`[ORM ERROR]: Sorting Kata by ratings ${error}`)
@@ -156,7 +156,7 @@ export const sortByRatings = async () : Promise<any[] | undefined> =>
 export const sortByChances = async () : Promise<any[] | undefined> => {
     try {
         let kataModel = kataEntity();
-        return await kataModel.find().sort({chances: -1})
+        return await kataModel.find().sort({intents: -1})
         
     } catch (error) {
         LogError(`[ORM ERROR]: Sorting Kata by chances ${error}`)
@@ -165,12 +165,45 @@ export const sortByChances = async () : Promise<any[] | undefined> => {
 
 // Add stars
 
-export const addStars = async (id: string, user_star: number) : Promise<any | undefined> => {
+export const setKataStars = async (id: string, user_star: number) : Promise<any | undefined> => {
     try {
+        
         let kataModel = kataEntity();
-        return await kataModel.findOne({_id: id}, {$push: {stars_array: user_star}});
+
+        return await kataModel.findOneAndUpdate({_id: id}, {$push: {ratings: user_star}})
+        .exec()
+        .then(async () => {
+
+            // TODO Refactor with aggregations if possible (destructuring array with unwind)
+            const kataDoc = await kataModel.findOne({_id:id})
+            
+            const ratings = kataDoc.ratings
+            // console.log("KATA RATINGS:", kataDoc.ratings);
+            
+            function check(a:any, b:any){
+                return a + b
+            }
+            let sum = ratings.reduce(check);
+            let avg = Math.floor(sum/ratings.length);
+            
+            return await kataModel.findOneAndUpdate({_id: id}).set({stars: avg});
+        })
         
     } catch (error) {
         LogError(`[ORM ERROR]: Adding stars ${error}`)
     }
 }
+
+// Solve kata
+
+export const tryToSolveKata = async (id: string, solution: string) : Promise<any | undefined> => {
+    try {
+        let kataModel = kataEntity();
+        return await kataModel.findOneAndUpdate({_id: id}, {$push: {intents: solution}})
+                
+    } catch (error) {
+        LogError(`[ORM ERROR]: To solve a kata ${error}`)
+    }
+
+}
+

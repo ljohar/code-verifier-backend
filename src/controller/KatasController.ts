@@ -5,11 +5,13 @@ import { IKata, KataLevel } from "../domain/interfaces/IKata.interface";
 
 // ORM - Katas Collection
 
-import { getAllKatas, getKataById, deleteKataById, createKata, updateKataById, filterByLevel, sortByNewest, sortByRatings, sortByChances, addStars } from "../domain/orm/Katas.orm";
+import { getAllKatas, getKataById, deleteKataById, createKata, updateKataById, filterByLevel, sortByNewest, sortByRatings, sortByChances, setKataStars, tryToSolveKata } from "../domain/orm/Katas.orm";
 import { response } from "express";
 
 @Route("api/katas")
 @Tags("KatasController")
+
+// TODO Update IKataController interface
 export class KataController implements IKataController{
     
     /**
@@ -167,20 +169,20 @@ export class KataController implements IKataController{
      * @param kata 
      * @returns message informing if updating was successful
      */
-     @Put("/")
+     @Put("/stars")
      public async addStars(@Query()id: string, @Query()user_star: number): Promise<any> {
          
          let response: any = '';
  
          if(id){
-             LogSuccess(`[/api/katas] Push stars to Kata with Id: ${id}`);
-             await addStars(id, user_star).then((r) => {        
+             LogSuccess(`[/api/katas/stars] Push stars to Kata with Id: ${id}`);
+             await setKataStars(id, user_star).then((r) => {     
                  response = {
                      message: `Stars were added to Kata with Id: ${id}`
                  }
              });
          }else{
-             LogWarning('[/api/katas] Push stars to Kata Request without Id')
+             LogWarning('[/api/katas/stars] Push stars to Kata Request without Id')
              response = {
                  message: "Please provide a valid Id"
              }
@@ -189,6 +191,37 @@ export class KataController implements IKataController{
          
          return response;
      }
+
+     /**
+      * Endpoint to update kata solution intents
+      * @param id 
+      * @param {string} solution provided by the user
+      * @returns 
+      */
+      @Put("/intents")
+      public async tryToSolveKata(@Query()id: string, @Query()solution: string): Promise<any> {
+          
+          let response: any = '';
+  
+          if(id){
+              LogSuccess(`[/api/katas/intents] Try to solve Kata with Id: ${id}`);
+              await tryToSolveKata(id, solution).then((r) => { 
+                LogSuccess(`[/api/katas] Put kata solution: ${solution}`);    
+                  response = {
+                      message: `Solution intent push to Kata with Id: ${id}`,
+                      solution: r.solution
+                  }
+              });
+          }else{
+              LogWarning('[/api/katas/intents] Push solution to Kata Request without Id')
+              response = {
+                  message: "Please provide a valid Id"
+              }
+              
+          }
+          
+          return response;
+      }
 
     
     

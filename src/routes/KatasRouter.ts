@@ -51,15 +51,15 @@ katasRouter.route('/')
         let name: string = req?.body?.name;
         let description: string = req?.body?.description || '';
         let level: KataLevel = req?.body?.level || KataLevel.BASIC;
-        let intents: number = req?.body?.intents || 0;
+        let intents: string[] = []   
         let stars: number = req?.body?.stars || 0;
         let creator: string = res.locals.loggedUser._id;
-        let solution: string = req?.body?.solution || '';
+        let solution: string = req?.body?.solution || 'Default solution';
         let participants: string[] = req?.body?.participants || [];
-        let sarray: number[] = []
+        let ratings: number[] = []
         
 
-        if(name && description && level && intents >= 0 && stars >= 0 && creator && solution && participants){
+        if(name && description && level && stars >= 0 && creator && solution && participants){
             
             //Controller Instance to execute method
             const controller: KataController = new KataController();
@@ -73,7 +73,7 @@ katasRouter.route('/')
                 creator: creator,
                 solution: solution,
                 participants: participants,
-                sarray: sarray
+                ratings: ratings
             }
 
             //Obtain Response
@@ -91,12 +91,11 @@ katasRouter.route('/')
     })
     // PUT:
     .put(jsonParser, verifyToken, async (req: Request, res: Response) => {
-        //Obtaion a Query Param (Id)
+        //Obtain a Query Param (Id)
         let id: any = req?.query.id;
 
         // Obtain the logged in User ID 
         let userId: any = res.locals.loggedUser?._id
-
 
         // Obtain Kata creator
         // Controller Instance to execute methods
@@ -111,18 +110,15 @@ katasRouter.route('/')
             console.log('Verifing kata creator:', userId == creator);
         } );
 
-        
-        
-
         // Read from body 
         let name: string = req?.body?.name;
         let description: string = req?.body?.description || 'Default description';
         let level: KataLevel = req?.body?.level || KataLevel.BASIC;
-        let intents: number = req?.body?.intents || 0;
+        let intents: string[]= []
         let stars: number = req?.body?.stars || 0;
         let solution: string = req?.body?.solution || 'Default solution';
         let participants: string[] = req?.body?.participants || [];
-        let sarray: number[] = []
+        let ratings: number[] = []
         
         let kataSent: IKata = {
             name: name || "default",
@@ -133,18 +129,18 @@ katasRouter.route('/')
             creator: creator,
             solution: solution,
             participants: participants,
-            sarray: sarray
+            ratings: ratings
         }
 
         console.log('Kata sent:', kataSent);
         
 
-        // TODO create methods tu sum up stars and intents
         
-
+        
+        // Only the kata creator can make updatings
         if(userId == creator){
 
-            if(name && description && level && intents >= 0 && stars >= 0 && solution && participants){
+            if(name && description && level  && stars >= 0 && solution && participants){
     
                 let kata: IKata = {
                     name: name || "default",
@@ -155,7 +151,7 @@ katasRouter.route('/')
                     creator: creator,
                     solution: solution,
                     participants: participants,
-                    sarray: sarray
+                    ratings: ratings
                 }   
     
             // Obtain response
@@ -200,6 +196,7 @@ katasRouter.route('/')
         return res.send(response);
     })
 
+    // TODO refactor following the new kata schema
     katasRouter.route('/:chances')
     // GET - sort by newest
     .get(verifyToken, async (req: Request, res: Response)=>{ 
@@ -211,6 +208,64 @@ katasRouter.route('/')
         return res.send(response);
     })
 
+    katasRouter.route('/star/stars')
+    // PUT - Add stars
+    .put(verifyToken, async (req: Request, res: Response)=>{
+        //Obtaion a Query Params
+        let id: any = req?.query.id;
+        let stars: any = req?.query.user_star;
+
+        if(stars>0 && stars<=5){
+
+        //Controller Instance to execute method
+        const controller: KataController = new KataController();
+
+        //Obtain Response
+        const response: any = await controller.addStars(id, stars);
+
+        //Send to the client the response
+        return res.send(response);
+
+        }else{
+            return res.status(400).send({
+                message: '[ERROR] Rating Kata. Rating must be in the range of 1 to 5'
+            });
+        }
+    })
+
+    katasRouter.route('/intents')
+    // PUT - Send a solution
+    .put(jsonParser, verifyToken, async (req: Request, res: Response) => {
+        //Obtain a Query Param (Id)
+        let id: any = req?.query.id;
+
+        // Obtain the logged in User ID 
+        //let userId: any = res.locals.loggedUser?._id
+
+        // Read from body
+        let solution: any = req?.body.solution 
+
+        
+
+        if(solution){
+
+            // Controller Instance to execute methods
+            const controller: KataController = new KataController();
+
+            // Obtain response
+            const response: any = await controller.tryToSolveKata(id, solution)
+
+            
+    
+            // Send to the client the response 
+            return res.send(response);
+            
+        }else{
+            return res.status(400).send({
+                message: '[ERROR] Solving Kata. Please provide your solution'
+            });
+        }
+    })
 
 //Export Kata Router
 export default katasRouter;
