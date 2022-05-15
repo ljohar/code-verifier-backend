@@ -1,6 +1,6 @@
 import  { userEntity } from "../entities/User.entity";
 import { LogSuccess, LogError } from "../../utils/logger";
-import { IUser } from "../interfaces/IUser.interface";
+import { IUser, UserRole } from "../interfaces/IUser.interface";
 import { UserResponse } from "../types/UserResponse.type";
 import { kataEntity } from "../entities/Kata.entity";
 import { IKata } from "../interfaces/IKata.interface";
@@ -90,6 +90,21 @@ export const updateUserById = async ( id: string, user: any): Promise<any | unde
         
     } catch (error) {
         LogError(`[ORM ERROR]: Updating User ${id}: ${error}`); 
+    }
+}
+
+/**
+ * Method to obtain user role
+ * @param id 
+ */
+export const obtainUserPermissions = async( id: any): Promise<any | undefined> => {
+    try {
+        let userModel = userEntity();
+        return await userModel.findById(id).select('role')
+        
+    } catch (error) {
+        LogError(`[ORM ERROR]: Obtaining User roles ${id}: ${error}`); 
+        
     }
 }
 

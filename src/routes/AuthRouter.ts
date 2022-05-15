@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { AuthController } from "../controller/AuthController";
-import { IUser } from "../domain/interfaces/IUser.interface";
+import { IUser, UserRole } from "../domain/interfaces/IUser.interface";
 import { IAuth } from "../domain/interfaces/IAuth.interface";
 
 // BCRYPT
@@ -22,7 +22,7 @@ let jsonParser = bodyParser.json();
 authRouter.route('/register')
 .post( jsonParser, async (req: Request, res: Response) => {
 
-    let { name, email, password, age } = req?.body;
+    let { name, email, password, age, role } = req?.body;
     let hashedPassword = '';
     if(name && password && email && age ){
         // Obtaion the password in request and cypher
@@ -33,7 +33,8 @@ authRouter.route('/register')
             email: email,
             password: hashedPassword,
             age: age,
-            katas: []
+            katas: [],
+            role: role || UserRole.USER
         }
 
         //Controller Instance to execute method

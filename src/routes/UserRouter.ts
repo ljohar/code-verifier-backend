@@ -16,6 +16,7 @@ let jsonParser = bodyParser.json();
 
 // JWT verifier MiddleWare
 import { verifyToken } from "../middlewares/verifyToken.middleware";
+import { verifyPermissions } from "../middlewares/verifyPermissions.middleware";
 
 //http:localhost:8000/api/users?id=6256e3dd6d173f7b990593a5
 usersRouter.route('/')
@@ -36,7 +37,7 @@ usersRouter.route('/')
         //Send to the client the response
         return res.status(200).send(response);
     })// DELETE:
-    .delete(verifyToken, async (req: Request, res: Response)=>{
+    .delete(verifyToken, verifyPermissions('Admin'), async (req: Request, res: Response)=>{
         let id: any = req.query?.id;
         LogInfo(`Query Param: ${id}`);
         //Controller Instance to execute method
