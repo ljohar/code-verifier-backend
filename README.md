@@ -64,4 +64,3 @@ Note: use npx tsc --init to create a tsconfig file.
 
 - webpack-shell-plugin: allows webpack config
 
-On pa
